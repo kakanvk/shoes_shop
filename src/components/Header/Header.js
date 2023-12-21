@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Header.css"
 import { useState } from "react";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import axios from "axios";
 
 function Header() {
@@ -12,6 +12,22 @@ function Header() {
     const [searchVisible, setSearchVisible] = useState(false);
     const [isLoginPopup, setIsLoginPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Đăng nhập thành công',
+        });
+    };
+
+    const errorMessage = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Đăng nhập thất bại',
+        });
+    };
 
     const handleSearchVisible = (e) => {
         setSearchVisible(!searchVisible);
@@ -25,8 +41,9 @@ function Header() {
 
     return (
         <>
+            {contextHolder}
             {
-                isLoginPopup && <Login setIsLoginPopup={setIsLoginPopup} />
+                isLoginPopup && <Login setIsLoginPopup={setIsLoginPopup} success={success} errorMessage={errorMessage}/>
             }
             <div className="Header">
                 {
@@ -82,7 +99,7 @@ function Header() {
 
 function Login(props) {
 
-    const { setIsLoginPopup } = props;
+    const { setIsLoginPopup, success, errorMessage } = props;
 
     const onFinish = async (values) => {
 
@@ -95,18 +112,29 @@ function Login(props) {
             },
         })
             .then(response => {
-                localStorage.setItem('user', JSON.stringify(response.data.user));
-                console.log(response.data);
+
+                const userData = {
+                    ...response.data,
+                    password,
+                    username,
+                }
+
+                localStorage.setItem('user', JSON.stringify(userData));
+                console.log(localStorage.getItem('user'));
                 console.log('Đăng nhập thành công');
+                success();
+                setIsLoginPopup(false);
             })
             .catch(error => {
                 console.log('Đăng nhập không thành công');
+                errorMessage();
             });
 
     }
 
     return (
         <div className="Login">
+
             <div className="overplay" onClick={() => setIsLoginPopup(false)}>
 
             </div>

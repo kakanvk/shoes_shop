@@ -2,6 +2,9 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { storage } from '../../../firebase';
+import imageCompression from 'browser-image-compression';
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 import {
     Breadcrumb,
@@ -12,6 +15,8 @@ import {
     InputNumber,
     Select,
     Upload,
+    message,
+    Spin,
 } from 'antd';
 
 const { TextArea } = Input;
@@ -26,15 +31,100 @@ const normFile = (e) => {
 function AddProduct() {
 
     const [productTypes, setProductTypes] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const onFinish = (values) => {
-        console.log(values);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const successMessage = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Thêm sản phẩm thành công',
+        });
+    };
+
+    const errorMessage = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Thêm sản phẩm thất bại',
+        });
+    };
+
+    const handleCreateProduct = async (data) => {
+        axios.post('http://localhost:8080/api/v1/products', data, {
+            auth: {
+                username: "admin",
+                password: "123456"
+            }
+        })
+            .then(response => {
+                console.log("Add product successfully");
+                successMessage();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                errorMessage();
+            });
+    }
+
+    const onFinish = async (values) => {
+
+        setLoading(true);
+
+        const file = values.file[0].originFileObj;
+
+        if (!file) return;
+
+        const maxImageSize = 1024;
+
+        try {
+            let compressedFile = file;
+
+            if (file.size > maxImageSize) {
+                compressedFile = await imageCompression(file, {
+                    maxSizeMB: 0.8,
+                    maxWidthOrHeight: maxImageSize,
+                    useWebWorker: true,
+                });
+            }
+
+            const storageRef = ref(storage, `shoesshop/${compressedFile.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+            uploadTask.on("state_changed",
+                (snapshot) => {
+
+                },
+                (error) => {
+                    console.log(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+
+                        const newProduct = {
+                            "name": values.name,
+                            "description": values.description,
+                            "image_url": downloadURL,
+                            "price": values.price,
+                            "type_id": values.type,
+                            "genderType": values.gender,
+                            "sale_id": "0"
+                        }
+
+                        handleCreateProduct(newProduct);
+
+                        setLoading(false);
+                    });
+                }
+            );
+        } catch (error) {
+            console.error('Image Compression Error:', error);
+        }
     };
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/v1/productTypes/full')
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 setProductTypes(response.data);
             })
             .catch(error => {
@@ -44,16 +134,20 @@ function AddProduct() {
 
     return (
         <Flex className="AddProduct" vertical="true" gap={50}>
+            {contextHolder}
             <Breadcrumb
                 items={[
                     {
                         title: 'Quản lý',
                     },
                     {
-                        title: 'Quản lý sản phẩm',
+                        title: 'Thêm sản phẩm',
                     },
                 ]}
             />
+            {
+                loading && <Spin />
+            }
             <Form
                 name="add-product-form"
                 labelCol={{
@@ -128,8 +222,8 @@ function AddProduct() {
                     ]}>
                     <TextArea rows={4} />
                 </Form.Item>
-                <Form.Item label="Hình ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
-                    <Upload action="/upload.do" listType="picture-card">
+                <Form.Item name="file" label="Hình ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
+                    <Upload action="/upload.do" listType="picture-card" maxCount={1}>
                         <div>
                             <PlusOutlined />
                             <div

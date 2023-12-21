@@ -27,7 +27,7 @@ function AdminLayout() {
 
     return (
         <Layout className="AdminLayout">
-            <Sider width={280} theme="dark">
+            <Sider width={280} theme="dark" style={{padding: 10}}>
                 <Space><h1 className='AdminLayout_title'>SHOES SHOP</h1></Space>
                 <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
                     <Menu.Item key="1" icon={<DashboardOutlined />}>

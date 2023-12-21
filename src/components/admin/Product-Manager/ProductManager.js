@@ -8,10 +8,12 @@ import { Badge, Breadcrumb, Flex, Space, Table } from "antd";
 function ProductManager() {
 
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
 
+        setLoading(true);
         axios.get('http://localhost:8080/api/v1/products/full')
             .then(response => {
                 const productsFormatted = response.data.map((product) => {
@@ -28,6 +30,7 @@ function ProductManager() {
                 })
                 console.log(response.data);
                 setProducts(productsFormatted);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -65,7 +68,7 @@ function ProductManager() {
         {
             title: 'Giảm giá',
             dataIndex: 'sale_percent',
-            render: (text) => <Badge count={`${text}%`} color= { text>0 ? '#52c41a': '#b9b9b9' }/>,
+            render: (text) => <Badge count={`${text}%`} color={text > 0 ? '#52c41a' : '#b9b9b9'} />,
         }
     ];
 
@@ -98,6 +101,8 @@ function ProductManager() {
                 }}
                 columns={columns}
                 dataSource={products}
+                loading={loading}
+                pagination={true}
             />
         </Flex>
     )
