@@ -1,0 +1,153 @@
+.Shop{
+    display: flex;
+    flex: 1;
+    padding: 40px 40px 60px 40px;
+    gap: 40px;
+    position: relative;
+}
+
+.Shop_left{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 300px;
+    height: 500px;
+    position: sticky;
+    top: 90px;
+}
+
+.Shop_left > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.Shop_left > div > span{
+    font-weight: 600;
+}
+
+.Shop_left > div > div{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter_color > div > button{
+    aspect-ratio: 1/1;
+    width: 35px;
+    padding: 0;
+}   
+
+.filter_size > div > button{
+    aspect-ratio: 1/1;
+    width: 35px;
+    padding: 0;
+}
+
+button{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 15px;
+    color: rgb(126, 126, 126);
+    background-color: white;
+    border: 1px solid #c4c4c4;
+    font-weight: 500;
+}
+
+.active_filter{
+    color: #0b0b0b;
+    border: 2px solid #0b0b0b;
+    font-weight: 600;
+}
+
+.Shop_right{
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) );
+    flex: 1;
+    gap: 30px;
+}
+
+.Shop_right_shoes{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 200px;
+    height: fit-content;
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid transparent;
+    transition: 0.1s;
+}
+
+.Shop_right_shoes:hover{
+    border: 1px solid black;
+}
+
+.shoes_top{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.shoes_top_img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    position: relative;
+}
+
+.shoes_top_img img{
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.shoes_tags{
+    position: absolute;
+    top: 20px;
+    left: 0;
+    background-color: black;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+}
+
+.shoes_top_info{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.shoes_top_info h3{
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+}
+
+.shoes_top_info span{
+    font-size: 12px;
+    color: rgb(106, 106, 106);
+    font-weight: 500;
+}
+
+.shoes_bottom{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.shoes_bottom h4{
+    color: black;
+}
+
+.shoes_bottom span{
+    text-decoration: line-through;
+    font-size: 14px;
+    color: rgb(162, 162, 162);
+}
