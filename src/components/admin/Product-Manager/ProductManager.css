@@ -1,0 +1,12 @@
+.option-sticky{
+    position: sticky;
+    right: 0;
+    left: 0;
+    top: 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(16px);
+    z-index: 9;
+}

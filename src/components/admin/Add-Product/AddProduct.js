@@ -31,6 +31,7 @@ const normFile = (e) => {
 function AddProduct() {
 
     const [productTypes, setProductTypes] = useState([]);
+    const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [messageApi, contextHolder] = message.useMessage();
@@ -107,7 +108,7 @@ function AddProduct() {
                             "price": values.price,
                             "type_id": values.type,
                             "genderType": values.gender,
-                            "sale_id": "0"
+                            "sale_id": values.sale
                         }
 
                         handleCreateProduct(newProduct);
@@ -126,6 +127,20 @@ function AddProduct() {
             .then(response => {
                 // console.log(response.data);
                 setProductTypes(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+        axios.get('http://localhost:8080/api/v1/sales?page=1&size=20&sort=id,asc&search=', {
+            auth: {
+                username: "admin",
+                password: "123456"
+            }
+        })
+            .then(response => {
+                console.log(response.data.content);
+                setSales(response.data.content);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -161,6 +176,7 @@ function AddProduct() {
                     maxWidth: 800,
                 }}
                 onFinish={onFinish}
+                disabled={loading}
             >
                 <Form.Item label="Tên sản phẩm"
                     name="name"
@@ -211,7 +227,27 @@ function AddProduct() {
                             message: 'Nhập giá!',
                         },
                     ]}>
-                    <InputNumber />
+                    <InputNumber style={{ width: "100%" }} />
+                </Form.Item>
+                <Form.Item
+                    label="Mã giảm giá"
+                    name="sale"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Chọn mã giảm giá!',
+                        },
+                    ]}
+                >
+                    <Select>
+                        {sales.map((sale) => {
+                            return (
+                                <Select.Option value={sale.id} key={sale.id}>
+                                    {sale.sale_info} ({sale.percent_sale}%)
+                                </Select.Option>
+                            )
+                        })}
+                    </Select>
                 </Form.Item>
                 <Form.Item label="Mô tả sản phẩm" name="description"
                     rules={[
@@ -222,7 +258,14 @@ function AddProduct() {
                     ]}>
                     <TextArea rows={4} />
                 </Form.Item>
-                <Form.Item name="file" label="Hình ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
+                <Form.Item name="file" label="Hình ảnh" valuePropName="fileList" getValueFromEvent={normFile}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Chọn hình ảnh!',
+                        },
+                    ]}
+                >
                     <Upload action="/upload.do" listType="picture-card" maxCount={1}>
                         <div>
                             <PlusOutlined />

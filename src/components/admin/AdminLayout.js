@@ -1,6 +1,6 @@
 import UserManager from './User-Manager/UserManager';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Layout, Menu, Space, Typography  } from 'antd';
+import { Button, Flex, Layout, Menu, Space, Typography } from 'antd';
 import {
     DashboardOutlined,
     UserOutlined,
@@ -17,9 +17,12 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import "./AdminLayout.css";
 import ProductManager from './Product-Manager/ProductManager';
 import AddProduct from './Add-Product/AddProduct';
+import AddProductDetail from './ProductDetailManager/AddProductDetail';
+import ProductDetailManagerById from './ProductDetailManager/ProductDetailManagerById';
+import ProductDetailManager from './ProductDetailManager/ProductDetailManager';
+import ProductTypeManager from './ProductTypeManager/ProductTypeManager';
 
 const { Sider, Content } = Layout;
-const { Title } = Typography;
 
 function AdminLayout() {
 
@@ -27,8 +30,15 @@ function AdminLayout() {
 
     return (
         <Layout className="AdminLayout">
-            <Sider width={280} theme="dark" style={{padding: 10}}>
-                <Space><h1 className='AdminLayout_title'>SHOES SHOP</h1></Space>
+            <Sider width={280} theme="dark" style={{ padding: 10 }}>
+                <Flex justify='space-between' align='center'>
+                    <h1 className='AdminLayout_title'>SHOES SHOP</h1>
+                    <Button type="text" style={{ color: "white"}}>
+                        <Link to="/">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </Link>
+                    </Button>
+                </Flex>
                 <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
                     <Menu.Item key="1" icon={<DashboardOutlined />}>
                         <Link to="">Tổng quan</Link>
@@ -42,11 +52,17 @@ function AdminLayout() {
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.SubMenu key="PM" icon={<BuildOutlined />} title="Sản phẩm">
+                        <Menu.Item key="products/add_product" icon={<PlusOutlined />}>
+                            <Link to="products/add-product" >Thêm sản phẩm</Link>
+                        </Menu.Item>
                         <Menu.Item key="products" icon={<BarsOutlined />}>
                             <Link to="products">Quản lý sản phẩm</Link>
                         </Menu.Item>
-                        <Menu.Item key="products/add" icon={<PlusOutlined />}>
-                            <Link to="products/add" >Thêm sản phẩm</Link>
+                        <Menu.Item key="product_type" icon={<BarsOutlined />}>
+                            <Link to="products-type">Loại sản phẩm</Link>
+                        </Menu.Item>
+                        <Menu.Item key="product_detail" icon={<BarsOutlined />}>
+                            <Link to="products-detail">Chi tiết sản phẩm</Link>
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.Item key="settings" icon={<SettingOutlined />}>
@@ -62,7 +78,11 @@ function AdminLayout() {
                     <Routes>
                         <Route path="/users" element={<UserManager />} />
                         <Route path="/products" element={<ProductManager />} />
-                        <Route path="/products/add" element={<AddProduct />} />
+                        <Route path="/products-detail" element={<ProductDetailManager />} />
+                        <Route path="/products-detail/:id" element={<ProductDetailManagerById />} />
+                        <Route path="/products-type" element={<ProductTypeManager />} />
+                        <Route path="/products/add-product" element={<AddProduct />} />
+                        <Route path="/products-detail/:id/add-product-detail" element={<AddProductDetail />} />
                     </Routes>
                 </Content>
             </Layout>

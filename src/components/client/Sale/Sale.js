@@ -86,7 +86,7 @@ function Sale() {
                                 <div className="shoes_top">
                                     <div className="shoes_top_img">
                                         <span className="shoes_tags">-{shoes.sale_percent}%</span>
-                                        <img src={shoes.image_url} alt="" />
+                                        <img src={shoes.image_url} alt="" lazy="true"/>
                                     </div>
                                     <div className="shoes_top_info">
                                         <h3>{shoes.name}</h3>
