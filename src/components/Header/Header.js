@@ -1,7 +1,7 @@
 
 import { Link, useLocation } from "react-router-dom";
 import "./Header.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 import axios from "axios";
@@ -12,6 +12,9 @@ function Header() {
     const [searchVisible, setSearchVisible] = useState(false);
     const [isLoginPopup, setIsLoginPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+
+    const [currentUser, setCurrentUser] = useState();
+    const [boxUserPopup, setBoxUserPopup] = useState(false);
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -39,11 +42,23 @@ function Header() {
         setSearchVisible(!searchVisible);
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        window.location.reload();
+    }
+
+    useEffect(() => {
+
+        setCurrentUser(JSON.parse(localStorage.getItem('user')));
+        console.log(JSON.parse(localStorage.getItem('user')));
+
+    }, [])
+
     return (
         <>
             {contextHolder}
             {
-                isLoginPopup && <Login setIsLoginPopup={setIsLoginPopup} success={success} errorMessage={errorMessage}/>
+                isLoginPopup && <Login setIsLoginPopup={setIsLoginPopup} success={success} errorMessage={errorMessage} />
             }
             <div className="Header">
                 {
@@ -86,11 +101,33 @@ function Header() {
                 }
                 <div className="Header_option">
                     <Link onClick={(e) => handleSearchVisible(e)}><i className="fa-solid fa-magnifying-glass"></i></Link>
-                    <Link onClick={() => setIsLoginPopup(!isLoginPopup)}><i className="fa-solid fa-user"></i></Link>
+                    {
+                        !currentUser ?
+                            <Link onClick={() => setIsLoginPopup(!isLoginPopup)}><i className="fa-solid fa-user"></i></Link>
+                            : <Link><i className="fa-solid fa-user" onClick={() => setBoxUserPopup(!boxUserPopup)}></i></Link>
+                    }
                     <Link to="cart" className="Header_cart_icon">
                         <i className="fa-solid fa-cart-shopping"></i>
                         <span>4</span>
                     </Link>
+                    {
+                        boxUserPopup &&
+                        <div className="Header-user-box">
+                            <div className="User-box-top">
+                                <h4>{currentUser?.fullName}</h4>
+                                <span>{currentUser?.role}</span>
+                            </div>
+                            <hr></hr>
+                            <div className="User-box-option">
+                                {
+                                    currentUser?.role === "ADMIN" ?
+                                        <Link to="/admin"><button>Quản lý</button></Link>
+                                        : ""
+                                }
+                                <button onClick={handleLogout}>Đăng xuất</button>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </>
@@ -120,10 +157,11 @@ function Login(props) {
                 }
 
                 localStorage.setItem('user', JSON.stringify(userData));
-                console.log(localStorage.getItem('user'));
+                console.log(JSON.parse(localStorage.getItem('user')));
                 console.log('Đăng nhập thành công');
                 success();
                 setIsLoginPopup(false);
+                window.location.reload();
             })
             .catch(error => {
                 console.log('Đăng nhập không thành công');

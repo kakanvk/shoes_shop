@@ -153,10 +153,13 @@ function ProductManager() {
     const handleDeleteProducts = () => {
 
         setLoading(true);
+
+        const adminData = JSON.parse(localStorage.getItem('user'));
+
         axios.delete(`http://localhost:8080/api/v1/products?ids=${productSelected.join(",")}`, {
             auth: {
-                username: "admin",
-                password: "123456"
+                username: adminData.username,
+                password: adminData.password
             }
         })
             .then(response => {

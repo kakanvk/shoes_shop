@@ -51,10 +51,13 @@ function AddProduct() {
     };
 
     const handleCreateProduct = async (data) => {
+
+        const adminData = JSON.parse(localStorage.getItem('user'));
+
         axios.post('http://localhost:8080/api/v1/products', data, {
             auth: {
-                username: "admin",
-                password: "123456"
+                username: adminData.username,
+                password: adminData.password
             }
         })
             .then(response => {
