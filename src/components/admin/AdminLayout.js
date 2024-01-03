@@ -22,6 +22,7 @@ import ProductDetailManagerById from './ProductDetailManager/ProductDetailManage
 import ProductDetailManager from './ProductDetailManager/ProductDetailManager';
 import ProductTypeManager from './ProductTypeManager/ProductTypeManager';
 import { useEffect, useState } from 'react';
+import UpdateProduct from './Product-Manager/UpdateProduct';
 
 const { Sider, Content } = Layout;
 
@@ -102,6 +103,7 @@ function AdminLayout() {
                                 <Route path="/products-type" element={<ProductTypeManager />} />
                                 <Route path="/products/add-product" element={<AddProduct />} />
                                 <Route path="/products-detail/:id/add-product-detail" element={<AddProductDetail />} />
+                                <Route path="/products/update/:id" element={<UpdateProduct />} />
                             </Routes>
                         </Content>
                     </Layout>

@@ -104,7 +104,7 @@ function Header() {
                     {
                         !currentUser ?
                             <Link onClick={() => setIsLoginPopup(!isLoginPopup)}><i className="fa-solid fa-user"></i></Link>
-                            : <Link><i className="fa-solid fa-user" onClick={() => setBoxUserPopup(!boxUserPopup)}></i></Link>
+                            : <Link onClick={() => setBoxUserPopup(!boxUserPopup)}><i className="fa-solid fa-user"></i></Link>
                     }
                     <Link to="cart" className="Header_cart_icon">
                         <i className="fa-solid fa-cart-shopping"></i>

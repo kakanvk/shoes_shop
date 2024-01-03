@@ -61,6 +61,7 @@ function ProductManager() {
                         gender_type: product.gender_for,
                         sale_percent: product.sale_percent,
                         type_name: product.type_name,
+                        update_product: product.id,
                     })
                 })
 
@@ -137,6 +138,11 @@ function ProductManager() {
             title: 'Giảm giá',
             dataIndex: 'sale_percent',
             render: (text) => <Badge count={`${text}%`} color={text > 0 ? '#52c41a' : '#b9b9b9'} />,
+        },
+        {
+            title: 'Sửa',
+            dataIndex: 'update_product',
+            render: (text) => <Link to={`/admin/products/update/${text}`}><i class="fa-solid fa-pen-to-square" style={{fontSize: "18px"}}></i></Link>
         }
     ];
 
